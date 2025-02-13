@@ -4,5 +4,10 @@ export const ResponseMessages = {
   },
   AUTH: {
     REGISTER_SUCCESS: 'User registered successfully',
+    INVALID_CREDENTIALS: 'Invalid username or password',
+    LOGIN_SUCCESS: 'Login successful',
+  },
+  GENERAL: {
+    DATABASE_ERROR: 'Database error occurred',
   },
 };
