@@ -9,9 +9,20 @@ import { ConfigModule } from './config/config.module';
 import { RedisModule } from './redis/redis.module';
 import { DatabaseModule } from './database/database.module';
 import { EncryptionModule } from './encryption/encryption.module';
+import { SessionModule } from './session/session.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, ChatModule, FilesModule, ConfigModule, RedisModule, DatabaseModule, EncryptionModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    ChatModule,
+    FilesModule,
+    ConfigModule,
+    RedisModule,
+    DatabaseModule,
+    EncryptionModule,
+    SessionModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
