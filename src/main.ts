@@ -18,11 +18,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   // Swagger Configuration
+  // Set up Swagger
   const config = new DocumentBuilder()
-    .setTitle('Secure Chat API') // Set API title
-    .setDescription('API documentation for Secure Chat backend') // API Description
-    .setVersion('1.0') // API Version
-    .addBearerAuth() // Enable JWT Authentication in Swagger
+    .setTitle('E-commerce API')
+    .setDescription('API documentation for the e-commerce backend')
+    .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   // Create and apply Swagger module
