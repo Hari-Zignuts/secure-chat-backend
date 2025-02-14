@@ -4,11 +4,33 @@ import { ConfigService } from './config/config.service';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SessionService } from './session/session.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookie from '@fastify/cookie';
+import * as crypto from 'crypto';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
   const configService = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
+
+  // Enable CORS
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: ['POST', 'GET', 'PUT', 'DELETE'],
+    credentials: true,
+  });
+
+  await app.register(cookie, {
+    secret:
+      configService.get('COOKIE_SECRET') ||
+      crypto.randomBytes(32).toString('base64'),
+  });
 
   // Apply session middleware
   const sessionService = app.get(SessionService);
@@ -18,7 +40,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   // Swagger Configuration
-  // Set up Swagger
   const config = new DocumentBuilder()
     .setTitle('E-commerce API')
     .setDescription('API documentation for the e-commerce backend')

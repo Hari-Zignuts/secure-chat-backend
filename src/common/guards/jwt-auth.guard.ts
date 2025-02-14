@@ -14,13 +14,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
+
+    // Ensure request.route exists before accessing path
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const routePath = request.route?.path || request.url;
+
     if (
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request.route.path === '/auth/login' ||
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request.route.path === '/auth/signup' ||
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request.route.path === '/test'
+      routePath === '/auth/login' ||
+      routePath === '/auth/signup' ||
+      routePath === '/auth/refresh-token'
     ) {
       return true;
     }
