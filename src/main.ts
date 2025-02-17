@@ -21,7 +21,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['https://nest.harimalam.in', 'http://localhost:3000'],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
     credentials: true,
   });

@@ -4,7 +4,6 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ResponseMessages } from 'src/common/constants/response-messages';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -15,10 +14,7 @@ import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async signup(dto: CreateUserDto): Promise<User> {
     const user = await this.usersService.createUser(dto);
@@ -46,26 +42,5 @@ export class AuthService {
       );
     }
     return { email: user.email, sub: user.id };
-  }
-
-  generateTokens(payload: PayloadType): {
-    accessToken: string;
-    refreshToken: string;
-  } {
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-    return { accessToken, refreshToken };
-  }
-
-  async verifyRefreshToken(refreshToken: string): Promise<PayloadType> {
-    try {
-      return this.jwtService.verify(refreshToken);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      throw new HttpException(
-        ResponseMessages.AUTH.INVALID_REFRESH_TOKEN,
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
   }
 }
