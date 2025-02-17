@@ -1,6 +1,7 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -11,10 +12,15 @@ import { LoginUserDto } from './dto/login-user-dto';
 import * as bcrypt from 'bcrypt';
 import { PayloadType } from 'src/common/interfaces/payload.interface';
 import { User } from 'src/users/user.entity';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    @Inject('GOOGLE_OAUTH_CLIENT')
+    private readonly oauthClient: OAuth2Client,
+  ) {}
 
   async signup(dto: CreateUserDto): Promise<User> {
     const user = await this.usersService.createUser(dto);
@@ -24,6 +30,37 @@ export class AuthService {
       );
     }
     return user;
+  }
+
+  // Method to verify the token
+  async verifyGoogleToken(token: string) {
+    try {
+      const ticket = await this.oauthClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload) {
+        throw new Error('Invalid Google token');
+      }
+      const existingUser = await this.usersService.getOneByEmail(
+        payload?.email || '',
+      );
+      if (existingUser) {
+        return existingUser;
+      }
+      const newUser = await this.usersService.createUser({
+        email: payload?.email || '',
+        name: payload?.name || '',
+        password: '',
+      });
+
+      return newUser;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new Error('Invalid Google token');
+    }
   }
 
   async verifyLogin(dto: LoginUserDto): Promise<PayloadType> {

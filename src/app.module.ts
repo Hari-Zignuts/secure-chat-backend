@@ -12,6 +12,7 @@ import { EncryptionModule } from './encryption/encryption.module';
 import { SessionModule } from './session/session.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { GoogleAuthModule } from './google-auth/google-auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { APP_GUARD } from '@nestjs/core';
     DatabaseModule,
     EncryptionModule,
     SessionModule,
+    GoogleAuthModule,
   ],
   controllers: [AppController],
   providers: [

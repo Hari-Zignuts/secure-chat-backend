@@ -10,6 +10,7 @@ export const ResponseMessages = {
     INVALID_REFRESH_TOKEN: 'Invalid refresh token',
     NO_REFRESH_TOKEN: 'No refresh token provided',
     REFRESH_SUCCESS: 'Token refreshed successfully',
+    INVALID_GOOGLE_CREDENTIAL: 'Invalid google credential',
   },
   GENERAL: {
     DATABASE_ERROR: 'Database error occurred',

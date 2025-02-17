@@ -19,7 +19,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const routePath = request.route?.path || request.url;
 
-    if (routePath === '/auth/login' || routePath === '/auth/signup') {
+    if (
+      routePath === '/auth/login' ||
+      routePath === '/auth/signup' ||
+      routePath === '/auth/google'
+    ) {
       return true;
     }
 

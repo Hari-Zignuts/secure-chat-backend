@@ -23,6 +23,27 @@ export class AuthController {
     };
   }
 
+  @Post('google')
+  async googleAuth(@Body() credential: { token: string }) {
+    if (!credential) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: ResponseMessages.AUTH.INVALID_GOOGLE_CREDENTIAL,
+        data: null,
+      };
+    }
+    const user = await this.authService.verifyGoogleToken(credential.token);
+    const token = this.jwtService.sign(
+      { email: user.email, sub: user.id },
+      { expiresIn: '7d' },
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      message: ResponseMessages.AUTH.LOGIN_SUCCESS,
+      data: { token },
+    };
+  }
+
   @Post('login')
   async login(
     @Body() dto: LoginUserDto,
