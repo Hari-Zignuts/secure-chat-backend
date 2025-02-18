@@ -6,13 +6,13 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ResponseMessages } from 'src/common/constants/response-messages';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
 import { LoginUserDto } from './dto/login-user-dto';
 import * as bcrypt from 'bcrypt';
 import { PayloadType } from 'src/common/interfaces/payload.interface';
-import { User } from 'src/users/user.entity';
 import { OAuth2Client } from 'google-auth-library';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class AuthService {

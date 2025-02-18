@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from './config/config.service';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { SessionService } from './session/session.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookie from '@fastify/cookie';
 import * as crypto from 'crypto';
@@ -10,6 +9,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { SessionService } from './modules/session/session.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

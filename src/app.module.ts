@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ChatModule } from './chat/chat.module';
-import { FilesModule } from './files/files.module';
-import { ConfigModule } from './config/config.module';
-import { RedisModule } from './redis/redis.module';
-import { DatabaseModule } from './database/database.module';
-import { EncryptionModule } from './encryption/encryption.module';
-import { SessionModule } from './session/session.module';
-import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-import { GoogleAuthModule } from './google-auth/google-auth.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { FilesModule } from './modules/files/files.module';
+import { ConfigModule } from './config/config.module';
+import { RedisModule } from './modules/redis/redis.module';
+import { DatabaseModule } from './database/database.module';
+import { EncryptionModule } from './modules/encryption/encryption.module';
+import { SessionModule } from './modules/session/session.module';
+import { GoogleAuthModule } from './modules/google-auth/google-auth.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
   imports: [
