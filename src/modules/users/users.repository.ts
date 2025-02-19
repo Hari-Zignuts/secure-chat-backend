@@ -56,4 +56,30 @@ export class UsersRepository {
       );
     }
   }
+
+  async findOneById(id: string): Promise<User | null> {
+    try {
+      return await this.usersRepository.findOne({ where: { id } });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        ResponseMessages.GENERAL.DATABASE_ERROR,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+        error.message,
+      );
+    }
+  }
+
+  async findAll(): Promise<User[]> {
+    try {
+      return await this.usersRepository.find();
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        ResponseMessages.GENERAL.DATABASE_ERROR,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+        error.message,
+      );
+    }
+  }
 }

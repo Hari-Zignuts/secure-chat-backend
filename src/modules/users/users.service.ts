@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseMessages } from 'src/common/constants/response-messages';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
-import { isEmail } from 'class-validator';
+import { isEmail, isUUID } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -28,5 +28,25 @@ export class UsersService {
       return null;
     }
     return await this.usersRepository.findOneByEmail(email);
+  }
+
+  async findOneById(id: string): Promise<User | null> {
+    if (!id || !isUUID(id)) {
+      return null;
+    }
+    return await this.usersRepository.findOneById(id);
+  }
+
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.findAll();
+  }
+
+  async toggleOnlineStatus(userId: string) {
+    const user = await this.findOneById(userId);
+    if (!user) {
+      return null;
+    }
+    user.isOnline = user.isOnline ? false : true;
+    return await this.usersRepository.saveUser(user);
   }
 }

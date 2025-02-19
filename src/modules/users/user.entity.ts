@@ -3,8 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -25,6 +25,15 @@ export class User {
   @Column({ nullable: true })
   publicKey: string;
 
+  @Column({ nullable: true })
+  statusMessage: string;
+
+  @Column({ default: false })
+  isOnline: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
