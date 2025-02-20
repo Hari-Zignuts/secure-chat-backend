@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { ReqWithPayloadType } from 'src/common/interfaces/payload.interface';
 
 @Controller('users')
 export class UsersController {
@@ -8,5 +9,10 @@ export class UsersController {
   @Get()
   async findAll() {
     return await this.usersService.findAll();
+  }
+
+  @Get('/me')
+  async findOneById(@Req() req: ReqWithPayloadType) {
+    return await this.usersService.findOneById(req.user.sub);
   }
 }

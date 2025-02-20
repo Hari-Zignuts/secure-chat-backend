@@ -44,17 +44,18 @@ export class ChatService {
       message,
     });
 
-    await this.messageRepo.save(newMessage);
+    const chat = await this.messageRepo.save(newMessage);
     await this.conversationRepo.update(conversation.id, {
       lastMessageAt: new Date(),
     });
-    return newMessage;
+    return chat;
   }
 
   async getConversations(userId: string) {
     const conversations = await this.conversationRepo.find({
       where: [{ user1: { id: userId } }, { user2: { id: userId } }],
       relations: ['user1', 'user2'],
+      order: { lastMessageAt: 'DESC' },
     });
     return conversations.map((conversation) => {
       const user =
@@ -79,7 +80,8 @@ export class ChatService {
       where: {
         conversation: { id: conversationId },
       },
-      relations: ['sender'],
+      relations: ['sender', 'conversation'],
+      order: { createdAt: 'ASC' },
     });
   }
 }

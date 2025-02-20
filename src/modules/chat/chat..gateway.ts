@@ -8,6 +8,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UsersService } from '../users/users.service';
+import { Req } from '@nestjs/common';
+import { ReqWithPayloadType } from 'src/common/interfaces/payload.interface';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway {
@@ -29,6 +31,10 @@ export class ChatGateway {
       message,
     }: { senderId: string; receiverId: string; message: string },
   ) {
+    console.log(senderId, receiverId, message, client.handshake.query.userId);
+    if (senderId !== (client.handshake.query.userId as string)) {
+      return;
+    }
     const sender = await this.userService.findOneById(senderId);
     if (!sender) {
       return;
