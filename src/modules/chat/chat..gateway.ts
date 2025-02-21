@@ -8,13 +8,11 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UsersService } from '../users/users.service';
-import { Req } from '@nestjs/common';
-import { ReqWithPayloadType } from 'src/common/interfaces/payload.interface';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway {
   @WebSocketServer() server: Server;
-  private activeUsers = new Map<string, string>(); // Map of userId -> socketId
+  private activeUsers = new Map<string, string>();
 
   constructor(
     private chatService: ChatService,
@@ -43,15 +41,26 @@ export class ChatGateway {
     if (!receiver) {
       return;
     }
-    const chat = await this.chatService.saveMessage(
-      senderId,
-      receiverId,
+
+    const { chat, isNewConversation } = await this.chatService.saveMessage(
+      sender,
+      receiver,
       message,
     );
     if (this.activeUsers.has(receiverId)) {
       const receiverSocketId = this.activeUsers.get(receiverId);
       if (!receiverSocketId) {
         return;
+      }
+      if (isNewConversation) {
+        const newConversation = {
+          id: chat.conversation.id,
+          user: sender,
+          lastMessageAt: chat.conversation.lastMessageAt,
+        };
+        this.server
+          .to(receiverSocketId)
+          .emit('newConversation', newConversation);
       }
       this.server.to(receiverSocketId).emit('receiveMessage', chat);
     }

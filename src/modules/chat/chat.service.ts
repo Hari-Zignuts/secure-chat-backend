@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Message } from './message.entity';
 import { Conversation } from './conversation.entity';
 import { UsersService } from '../users/users.service';
+import { User } from '../users/user.entity';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class ChatService {
@@ -15,17 +17,17 @@ export class ChatService {
     private usersService: UsersService,
   ) {}
 
-  async saveMessage(senderId: string, receiverId: string, message: string) {
-    const sender = await this.usersService.findOneById(senderId);
-    const receiver = await this.usersService.findOneById(receiverId);
-    if (!sender || !receiver) {
-      return;
-    }
+  async saveMessage(
+    sender: User,
+    receiver: User,
+    message: string,
+  ): Promise<{ chat: Message; isNewConversation: boolean }> {
+    let isNewConversation = false;
     // Find or create conversation
     let conversation = await this.conversationRepo.findOne({
       where: [
-        { user1: { id: senderId }, user2: { id: receiverId } },
-        { user1: { id: receiverId }, user2: { id: senderId } },
+        { user1: { id: sender.id }, user2: { id: receiver.id } },
+        { user1: { id: receiver.id }, user2: { id: sender.id } },
       ],
     });
 
@@ -36,8 +38,8 @@ export class ChatService {
         lastMessageAt: new Date(),
       });
       await this.conversationRepo.save(conversation);
+      isNewConversation = true;
     }
-
     const newMessage = this.messageRepo.create({
       conversation,
       sender,
@@ -48,10 +50,13 @@ export class ChatService {
     await this.conversationRepo.update(conversation.id, {
       lastMessageAt: new Date(),
     });
-    return chat;
+    return { chat, isNewConversation };
   }
 
   async getConversations(userId: string) {
+    if (!userId || !isUUID(userId)) {
+      return null;
+    }
     const conversations = await this.conversationRepo.find({
       where: [{ user1: { id: userId } }, { user2: { id: userId } }],
       relations: ['user1', 'user2'],
@@ -69,6 +74,9 @@ export class ChatService {
   }
 
   async getConversionById(conversationId: string) {
+    if (!conversationId || !isUUID(conversationId)) {
+      return null;
+    }
     return await this.conversationRepo.findOne({
       where: { id: conversationId },
       relations: ['user1', 'user2'],
@@ -76,6 +84,9 @@ export class ChatService {
   }
 
   async getOldMessages(conversationId: string) {
+    if (!conversationId || !isUUID(conversationId)) {
+      return null;
+    }
     return await this.messageRepo.find({
       where: {
         conversation: { id: conversationId },
