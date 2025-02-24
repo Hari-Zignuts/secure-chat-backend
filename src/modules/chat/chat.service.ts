@@ -21,8 +21,7 @@ export class ChatService {
     sender: User,
     receiver: User,
     message: string,
-  ): Promise<{ chat: Message; isNewConversation: boolean }> {
-    let isNewConversation = false;
+  ): Promise<Message> {
     // Find or create conversation
     let conversation = await this.conversationRepo.findOne({
       where: [
@@ -35,22 +34,22 @@ export class ChatService {
       conversation = this.conversationRepo.create({
         user1: sender,
         user2: receiver,
-        lastMessageAt: new Date(),
+        lastMessageAt: new Date().toISOString(),
       });
       await this.conversationRepo.save(conversation);
-      isNewConversation = true;
     }
     const newMessage = this.messageRepo.create({
       conversation,
       sender,
       message,
+      createdAt: new Date().toISOString(),
     });
 
     const chat = await this.messageRepo.save(newMessage);
     await this.conversationRepo.update(conversation.id, {
-      lastMessageAt: new Date(),
+      lastMessageAt: new Date().toISOString(),
     });
-    return { chat, isNewConversation };
+    return chat;
   }
 
   async getConversations(userId: string) {
@@ -60,7 +59,6 @@ export class ChatService {
     const conversations = await this.conversationRepo.find({
       where: [{ user1: { id: userId } }, { user2: { id: userId } }],
       relations: ['user1', 'user2'],
-      order: { lastMessageAt: 'DESC' },
     });
     return conversations.map((conversation) => {
       const user =

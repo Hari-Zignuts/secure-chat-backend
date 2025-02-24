@@ -53,6 +53,7 @@ export class AuthService {
       const newUser = await this.usersService.createUser({
         email: payload?.email || '',
         name: payload?.name || '',
+        avatar: payload?.picture || '',
         password: '',
       });
 

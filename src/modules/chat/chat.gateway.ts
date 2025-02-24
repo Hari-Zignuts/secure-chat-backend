@@ -9,7 +9,11 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UsersService } from '../users/users.service';
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class ChatGateway {
   @WebSocketServer() server: Server;
   private activeUsers = new Map<string, string>();
@@ -42,25 +46,11 @@ export class ChatGateway {
       return;
     }
 
-    const { chat, isNewConversation } = await this.chatService.saveMessage(
-      sender,
-      receiver,
-      message,
-    );
+    const chat = await this.chatService.saveMessage(sender, receiver, message);
     if (this.activeUsers.has(receiverId)) {
       const receiverSocketId = this.activeUsers.get(receiverId);
       if (!receiverSocketId) {
         return;
-      }
-      if (isNewConversation) {
-        const newConversation = {
-          id: chat.conversation.id,
-          user: sender,
-          lastMessageAt: chat.conversation.lastMessageAt,
-        };
-        this.server
-          .to(receiverSocketId)
-          .emit('newConversation', newConversation);
       }
       this.server.to(receiverSocketId).emit('receiveMessage', chat);
     }

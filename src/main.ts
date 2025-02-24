@@ -10,6 +10,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { SessionService } from './modules/session/session.service';
+import { NextFunction, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -21,13 +22,16 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: [
-      'https://nest.harimalam.in',
-      'http://localhost:3000',
-      'https://next.harimalam.in',
-    ],
-    methods: ['POST', 'GET', 'PUT', 'DELETE'],
+    origin: ['http://localhost:3000', 'https://next.harimalam.in'],
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: 'Content-Type,Authorization',
+  });
+
+  app.use((req: Response, res: Response, next: NextFunction) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp'); // If using SharedArrayBuffer
+    next();
   });
 
   await app.register(cookie, {

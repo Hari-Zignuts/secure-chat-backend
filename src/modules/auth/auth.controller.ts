@@ -32,11 +32,13 @@ export class AuthController {
         data: null,
       };
     }
+    console.log(credential);
     const user = await this.authService.verifyGoogleToken(credential.token);
     const token = this.jwtService.sign(
       { email: user.email, sub: user.id },
       { expiresIn: '7d' },
     );
+    console.log(token);
     return {
       statusCode: HttpStatus.OK,
       message: ResponseMessages.AUTH.LOGIN_SUCCESS,
