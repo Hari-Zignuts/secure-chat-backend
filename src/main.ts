@@ -22,7 +22,12 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://next.harimalam.in'],
+    origin: [
+      'http://localhost:3000',
+      'https://next.harimalam.in',
+      'https://secure-chat-frontend.vercel.app',
+      'https://chat.harimalam.in',
+    ],
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type,Authorization',
