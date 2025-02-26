@@ -22,4 +22,7 @@ export class Conversation {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   lastMessageAt: Date; // For sorting recent chats
+
+  @Column()
+  lastMessage: string;
 }

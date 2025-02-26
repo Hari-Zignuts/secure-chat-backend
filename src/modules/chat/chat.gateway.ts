@@ -33,7 +33,6 @@ export class ChatGateway {
       message,
     }: { senderId: string; receiverId: string; message: string },
   ) {
-    console.log(senderId, receiverId, message, client.handshake.query.userId);
     if (senderId !== (client.handshake.query.userId as string)) {
       return;
     }

@@ -35,6 +35,7 @@ export class ChatService {
         user1: sender,
         user2: receiver,
         lastMessageAt: new Date().toISOString(),
+        lastMessage: message,
       });
       await this.conversationRepo.save(conversation);
     }
@@ -48,6 +49,7 @@ export class ChatService {
     const chat = await this.messageRepo.save(newMessage);
     await this.conversationRepo.update(conversation.id, {
       lastMessageAt: new Date().toISOString(),
+      lastMessage: message,
     });
     return chat;
   }
@@ -67,7 +69,7 @@ export class ChatService {
           : conversation.user1;
       const id = conversation.id;
       const lastMessageAt = conversation.lastMessageAt;
-      return { id, lastMessageAt, user };
+      return { id, lastMessageAt, user, lastMessage: conversation.lastMessage };
     });
   }
 
