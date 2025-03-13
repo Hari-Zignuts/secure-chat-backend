@@ -13,6 +13,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
+import { AiService } from '../ai/ai.service';
 
 @Injectable()
 export class AuthService {
@@ -20,10 +21,12 @@ export class AuthService {
     private readonly usersService: UsersService,
     @Inject('GOOGLE_OAUTH_CLIENT')
     private readonly oauthClient: OAuth2Client,
+    private readonly aiService: AiService,
   ) {}
 
   async signup(dto: CreateUserDto): Promise<User> {
     const user = await this.usersService.createUser(dto);
+    await this.aiService.createConversation(user);
     if (!user) {
       throw new InternalServerErrorException(
         ResponseMessages.AUTH.REGISTER_FAIL,
@@ -56,7 +59,7 @@ export class AuthService {
         avatar: payload?.picture || '',
         password: '',
       });
-
+      await this.aiService.createConversation(newUser);
       return newUser;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

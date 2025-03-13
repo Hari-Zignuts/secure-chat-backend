@@ -54,8 +54,8 @@ async function bootstrap() {
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('E-commerce API')
-    .setDescription('API documentation for the e-commerce backend')
+    .setTitle('Secure Chat API')
+    .setDescription('API documentation for the secure chat backend')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

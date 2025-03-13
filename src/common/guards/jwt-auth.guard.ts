@@ -22,7 +22,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (
       routePath === '/auth/login' ||
       routePath === '/auth/signup' ||
-      routePath === '/auth/google'
+      routePath === '/auth/google' ||
+      routePath === '/ai'
     ) {
       return true;
     }

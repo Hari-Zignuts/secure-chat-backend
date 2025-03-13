@@ -13,6 +13,7 @@ import { EncryptionModule } from './modules/encryption/encryption.module';
 import { SessionModule } from './modules/session/session.module';
 import { GoogleAuthModule } from './modules/google-auth/google-auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     EncryptionModule,
     SessionModule,
     GoogleAuthModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [

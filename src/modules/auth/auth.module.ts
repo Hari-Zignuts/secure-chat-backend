@@ -6,11 +6,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from 'src/common/strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { GoogleAuthModule } from '../google-auth/google-auth.module';
+import { AiModule } from '../ai/ai.module';
 
 @Module({
   imports: [
     UsersModule,
     GoogleAuthModule,
+    AiModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
